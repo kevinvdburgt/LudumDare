@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>MiniBlocks - Ludum Dare Compo #26</title>
+		<link rel="stylesheet" type="text/css" href="style/default.css">
+		<script type="text/javascript" src="script/AssetManager.js"></script>
+		<script type="text/javascript" src="script/GameUtils.js"></script>
+		<script type="text/javascript" src="script/block.entity.js"></script>
+		<script type="text/javascript" src="script/heart.entity.js"></script>
+		<script type="text/javascript" src="script/blur.entity.js"></script>
+		<script type="text/javascript" src="script/disco.entity.js"></script>
+		<script type="text/javascript" src="script/potato.entity.js"></script>
+		<script type="text/javascript" src="script/shake.entity.js"></script>
+		<script type="text/javascript" src="script/game.js"></script>
+		<script type="text/javascript">
+			window.onload = function() {
+				window.ASSETMANAGER = new AssetManager();
+				ASSETMANAGER.add('./asset/heart_empty.png', 'heart_empty', 'image');
+				ASSETMANAGER.add('./asset/heart_half.png', 'heart_half', 'image');
+				ASSETMANAGER.add('./asset/heart_full.png', 'heart_full', 'image');
+				ASSETMANAGER.add('./asset/heart_bright.png', 'heart_bright', 'image');
+				ASSETMANAGER.add('./asset/blur.png', 'blur', 'image');
+				ASSETMANAGER.add('./asset/potato.png', 'patato', 'image');
+				ASSETMANAGER.add('./asset/potatoes.jpg', 'patatoes', 'image');
+				ASSETMANAGER.download(function(){ startGame(); });
+
+				function startGame() {
+					var game = new MiniBlocks('viewport', ASSETMANAGER);
+					game.start();
+				}
+			}
+		</script>
+	</head>
+	<body id="body">
+		<div id="container">
+			<canvas id="viewport" width="800" height="500"></canvas>
+		</div>
+		<audio autoplay loop>
+			<source src="asset/music.ogg" type="audio/ogg">
+			<source src="asset/music.mp3" type="audio/mpeg">
+		</audio>
+	</body>
+</html>
