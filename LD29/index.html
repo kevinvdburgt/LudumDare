@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Beneath the Grid - LudumDare #29 compo</title>
+        <link rel="stylesheet" type="text/css" href="style/default.css">
+    </head>
+    <body>
+        <!--
+            LudumDare Compo #29
+            Theme: Beneath the Surface
+            By Kevin van der Burgt [www.kevinvdburgt.com]
+        -->
+
+        <canvas id="stage"></canvas>
+
+        <script type="text/javascript" src="lib/three.min.js"></script>
+        <script type="text/javascript" src="lib/stats.min.js"></script>
+
+        <script type="text/javascript" src="shader/FXAA.js"></script>
+        <script type="text/javascript" src="shader/anaglyph.js"></script>
+
+        <script type="text/javascript" src="obj/obj.grid.js"></script>
+        <script type="text/javascript" src="obj/obj.cube.js"></script>
+
+        <script type="text/javascript" src="script/animate.js"></script>
+        <script type="text/javascript" src="script/level.js"></script>
+        <script type="text/javascript" src="script/world.js"></script>
+        <script type="text/javascript" src="script/game.js"></script>
+
+        <script type="text/javascript">
+            var game = new Game();
+            game.initialize();
+        </script>
+    </body>
+</html>
