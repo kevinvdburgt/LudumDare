@@ -1,0 +1,40 @@
+@font-face
+{
+    font-family: 'wendy';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../font/wendy.ttf") format('truetype');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  border: 0;
+}
+
+body {
+  font-family: 'wendy';
+  font-size: 20px;
+  background-color: #101010;
+}
+
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 800px;
+  height: 450px;
+  margin-left: -400px;
+  margin-top: -225px;
+  background-color: #FFF;
+}
+
+canvas {
+  image-rendering: optimizeSpeed;             /* Older versions of FF          */
+  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+  image-rendering: pixelated;                 /* Awesome future-browsers       */
+  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+}
