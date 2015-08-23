@@ -16,11 +16,19 @@ function Game() {
   this.player = new Player();
   this.world = new World();
   this.gui = new Gui();
-  this.weapon = new Weapon();
+  this.weapon = new Weapon(this);
   this.particles = new Particles();
+  this.pickups = new Pickups();
+  this.ai = new AI(this);
   this.boxes = [];
   this.camera = { x: 0, y: 0, velX: 0, velY: 0 };
   this.npc = [];
+
+  this.tick = 0;
+
+  this.menu = 0;
+  this.menu_level = 0;
+  this.difficulty = 2;
 
   this.initialize();
 };
@@ -29,11 +37,13 @@ Game.prototype.initialize = function() {
   var self = this;
 
   // Add assets
+  this.assets.add('assets/splash.png', 'splash', 'image');
   this.assets.add('assets/level1.png', 'level_1', 'image');
   this.assets.add('assets/character.png', 'character', 'image');
   this.assets.add('assets/weapons.png', 'weapons', 'image');
   this.assets.add('assets/npc1.png', 'npc1', 'image');
   this.assets.add('assets/npc2.png', 'npc2', 'image');
+  this.assets.add('assets/pickups.png', 'pickups', 'image');
 
   // Setup the canvas
   this.ctx = document.querySelector('#stage > canvas').getContext('2d');
@@ -44,6 +54,7 @@ Game.prototype.initialize = function() {
       return;
     }
     self.keyState.push(e.keyCode);
+    self.onKeyPress(e.keyCode);
   }, false);
 
   // Handle the released key's
@@ -76,12 +87,14 @@ Game.prototype.initialize = function() {
   this.assets.download(function() {
 
   }, function() {
-    self.gameState = 2;
+    self.gameState = 1;
   });
 };
 
 Game.prototype.update = function(dt) {
   var self = this;
+
+  this.tick++;
 
   if(this.gameState === 2) {
 
@@ -101,8 +114,12 @@ Game.prototype.update = function(dt) {
       }
     }
     for(var i = 0; i < npcCleanup.length; i++) {
+      this.particles.emit(this.npc[npcCleanup[i]].x, this.npc[npcCleanup[i]].y , 10);
       this.npc.splice(npcCleanup[i], 1);
     }
+
+    // Handle the pickups
+    this.pickups.update(this, dt);
 
     // Handle the plauer
     this.player.update(this, dt);
@@ -112,11 +129,18 @@ Game.prototype.update = function(dt) {
       this.boxes[i].update(this, dt);
     }
 
+    // Handle weapons
+    this.weapon.update(this, dt);
+
     // Handle the particles
     this.particles.update(this, dt);
 
     // Handle the GUI
     this.gui.update(game, dt);
+
+    if(this.player.health <= 0) {
+      this.gameState = 3;
+    }
   }
 };
 
@@ -125,13 +149,65 @@ Game.prototype.render = function() {
   this.ctx.fillStyle = '#F00';
 
   if(this.gameState === 1) {
-    this.ctx.fillStyle = '#3296dc';
-    this.ctx.fillRect(0, 0, 800, 450);
+    // Render background
+    this.ctx.drawImage(this.assets.get('splash'), 0, 0);
 
     // Draw menu items
-    this.ctx.fillStyle = '#cd6c1e';
-    this.ctx.fillRect(300, 100, 200, 30);
-    this.ctx.fillRect(300, 140, 200, 30);
+    this.ctx.font = '28px Wendy';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'top';
+    this.ctx.fillStyle = '#ff9c00';
+
+    if(this.menu_level === 0) {
+      this.ctx.fillRect(300, 200, 200, 30);
+      this.ctx.fillRect(300, 240, 200, 30);
+
+      this.ctx.fillStyle = '#FFF';
+      if(this.menu === 0) {
+        this.ctx.fillText('> Start Game <', 400, 200);
+      } else {
+        this.ctx.fillText('Start Game', 400, 200);
+      }
+
+      if(this.menu === 1) {
+        this.ctx.fillText('> Difficulty <', 400, 240);
+      } else {
+        this.ctx.fillText('Difficulty', 400, 240);
+      }
+    } else if(this.menu_level === 1) {
+      this.ctx.fillRect(300, 200, 200, 30);
+      this.ctx.fillRect(300, 240, 200, 30);
+      this.ctx.fillRect(300, 280, 200, 30);
+      this.ctx.fillRect(300, 320, 200, 30);
+      this.ctx.fillRect(300, 360, 200, 30);
+
+      this.ctx.fillStyle = '#FFF';
+      if(this.difficulty === 0) {
+        this.ctx.fillText('> God mode <', 400, 200);
+      } else {
+        this.ctx.fillText('God mode', 400, 200);
+      }
+      if(this.difficulty === 1) {
+        this.ctx.fillText('> Easy <', 400, 240);
+      } else {
+        this.ctx.fillText('Easy', 400, 240);
+      }
+      if(this.difficulty === 2) {
+        this.ctx.fillText('> Normal <', 400, 280);
+      } else {
+        this.ctx.fillText('Normal', 400, 280);
+      }
+      if(this.difficulty === 3) {
+        this.ctx.fillText('> Hard <', 400, 320);
+      } else {
+        this.ctx.fillText('Hard', 400, 320);
+      }
+      if(this.difficulty === 4) {
+        this.ctx.fillText('> Hardcore <', 400, 360);
+      } else {
+        this.ctx.fillText('Hardcore', 400, 360);
+      }
+    }
 
   } else if(this.gameState === 2) {
 
@@ -156,6 +232,12 @@ Game.prototype.render = function() {
       this.boxes[i].render(this, this.ctx);
     }
 
+    // Render pickups
+    this.pickups.render(this, this.ctx);
+
+    // Render weapons
+    this.weapon.render(this, this.ctx);
+
     // Render particles
     this.particles.render(this, this.ctx);
 
@@ -164,10 +246,72 @@ Game.prototype.render = function() {
 
     // Render the GUI
     this.gui.render(game, this.ctx);
+
+  } else if(this.gameState === 3) {
+    // Render background
+    this.ctx.drawImage(this.assets.get('splash'), 0, 0);
+
+    // Draw menu items
+    this.ctx.font = '64px Wendy';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'top';
+
+    this.ctx.fillStyle = '#ff9c00';
+    this.ctx.fillText('Game Over', 402, 162);
+    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillText('Game Over', 400, 160);
+
+    this.ctx.font = '34px Wendy';
+    this.ctx.fillStyle = '#ff9c00';
+    this.ctx.fillText('Score: ' + this.player.score, 402, 222);
+    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillText('Score: ' +this.player.score , 400, 220);
+
+    this.ctx.fillStyle = '#ff9c00';
+    this.ctx.fillRect(200, 300, 405 , 30);
+    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillText('Press any key to restart', 400, 300);
   }
 
 };
 
 Game.prototype.keyDown = function(keyCode) {
   return this.keyState.indexOf(keyCode) > -1;
+};
+
+Game.prototype.onKeyPress = function(key) {
+  if(this.gameState === 1) {
+    // Down
+    if(key === 83 || key === 40) {
+      if(this.menu_level === 0 && this.menu < 1) {
+        this.menu++;
+      } else if(this.menu_level === 1 && this.difficulty < 4) {
+        this.difficulty++;
+      }
+    }
+
+    // Up
+    if(key === 87 || key === 38) {
+      if(this.menu_level === 0 && this.menu > 0) {
+        this.menu--;
+      } else if(this.menu_level === 1 && this.difficulty > 0) {
+        this.difficulty--
+      }
+    }
+
+    // Select
+    if(key === 32 || key === 13) {
+      if(this.menu_level === 0 && this.menu === 0) {
+        // Play
+        this.gameState = 2;
+      } else if(this.menu_level === 0 && this.menu === 1) {
+        // Difficulty
+        this.menu_level = 1;
+      } else if(this.menu_level === 1) {
+        this.menu_level = 0;
+      }
+    }
+  } else if(this.gameState === 3) {
+    location.reload(false);
+  }
 };

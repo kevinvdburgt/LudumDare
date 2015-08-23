@@ -1,8 +1,8 @@
 function Player() {
   var self = this;
   this.tick = 0;
-  this.x = 0;
-  this.y = 0;
+  this.x = 60;
+  this.y = 700;
   this.width = 16;
   this.height = 32;
   this.velX = 0;
@@ -17,8 +17,8 @@ function Player() {
   this.isMoving = false;
   this.aimRotation = 0;
   this.movingDirection = 1; // 0: left, 1: right
-  this.weaponSlot = 0;
   this.health = 1;
+  this.score = 0;
 };
 
 Player.prototype.update = function(game, dt) {
@@ -58,16 +58,15 @@ Player.prototype.update = function(game, dt) {
 
   // Choose weapon slot
   if(game.keyDown(49)) {
-    this.weaponSlot = 0;
-    game.particles.emit(this.x, this.y, 400);
+    game.weapon.currentSlot = 0;
   } else if(game.keyDown(50)) {
-    this.weaponSlot = 1;
+    game.weapon.currentSlot = 1;
   } else if(game.keyDown(51)) {
-    this.weaponSlot = 2;
+    game.weapon.currentSlot = 2;
   } else if(game.keyDown(52)) {
-    this.weaponSlot = 3;
+    game.weapon.currentSlot = 3;
   } else if(game.keyDown(53)) {
-    this.weaponSlot = 4;
+    game.weapon.currentSlot = 4;
   }
 
   // Apply forces to the player
@@ -152,6 +151,11 @@ Player.prototype.update = function(game, dt) {
     game.camera.y = -400;
   }
 
+  // Max health
+  if(this.health > 1) {
+    this.health = 1;
+  }
+
 };
 
 Player.prototype.render = function(game, ctx) {
@@ -165,25 +169,4 @@ Player.prototype.render = function(game, ctx) {
     this.y,
     16,
     32);
-
-  // Draw the gun
-  ctx.save();
-  ctx.translate(this.x + (this.width / 2), this.y + (this.height / 2) + 5);
-
-  //ctx.translate(this.x - 16, this.y + 16);
-ctx.rotate(this.aimRotation);
-  var degrees = this.aimRotation * (180 / Math.PI);
-
-  ctx.drawImage(
-    game.assets.get('weapons'),
-    0,
-    (degrees < 90 && degrees > -90) ? 0 : 64,
-    64,
-    64,
-    -32,
-    -32,
-    64,
-    64);
-
-  ctx.restore();
 };

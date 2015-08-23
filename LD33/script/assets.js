@@ -18,7 +18,6 @@ Assets.prototype.get = function(name) {
 };
 
 Assets.prototype.checkCompletion = function(callbackProgress, callbackDone) {
-  console.log(this);
   callbackProgress(this.numSuccess, this.numFailed, this.queue.length);
   if(this.queue.length === (this.numSuccess + this.numFailed)) {
     callbackDone(this.numSuccess, this.numFailed, this.queue.length);

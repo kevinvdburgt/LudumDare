@@ -12,7 +12,7 @@ Box.prototype.update = function(game, dt) {
 };
 
 Box.prototype.render = function(game, ctx) {
-  ctx.fillStyle = 'rgba(250, 250, 250, 1)';
+  ctx.fillStyle = 'rgba(250, 250, 250, .5)';
   ctx.fillRect(
     this.x,
     this.y,

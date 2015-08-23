@@ -25,7 +25,7 @@ function Npc() {
   (function loop() {
 
     // Random movement
-    if(Math.random() > .25) {
+    if(Math.random() > .15) {
       self.velX = self.npcFavoriteDirection * Math.random();
     } else {
       self.velX = ~(self.npcFavoriteDirection * Math.random());
@@ -36,7 +36,7 @@ function Npc() {
 
     }
 
-    setTimeout(loop, Math.ceil(Math.random() * 500));
+    setTimeout(loop, Math.ceil(Math.random() * 250));
   })();
 };
 
