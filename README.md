@@ -1,24 +1,24 @@
 LudumDare
 =========
 
-LudumDare #33 - Theme: ...
+LudumDare #33 - Monster Weapons
 ---
-Play:
+Play: http://kevinvdburgt.com/data/games/ludumdare/LD33
 
-Source:
+Source: http://kevinvdburgt.com/data/games/ludumdare/LD33
 
-Timelapse:
+Timelapse: https://www.youtube.com/watch?v=ZbxvZb6ppwQ
 
-LudumDare #29 - Theme: Beneath the Surface
+LudumDare #29 - Beneath the Grid
 ---
 Play: https://kevin.sx/games/LudumDare/LD29/
 
-Source: https://github.com/kevinvdburgt/LD/LD29/
+Source: http://kevinvdburgt.com/data/games/ludumdare/LD29
 
 Timelapse: https://www.youtube.com/watch?v=DzOIRmgItdA
 
-LudumDare #26 - Theme: Minimalism
+LudumDare #26 - Mini Blocks
 ---
-Play: https://kevin.sx/games/LudumDare/LD26/
+Play: http://kevinvdburgt.com/data/games/ludumdare/LD26
 
 Source: https://github.com/kevinvdburgt/LD/LD26/
